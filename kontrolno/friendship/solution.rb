@@ -53,18 +53,19 @@ module Friendship
 
 		def find(hash)
 			if hash[:name]
-				@friends.select { |x| x.name == hash[:name] }
+				@friends.select { |friend| friend.name == hash[:name] }
 			elsif hash[:age]
-				@friends.select { |x| x.age == hash[:age] }
-			else hash[:sex]
-				@friends.select { |x| x.sex == hash[:sex] }
+				@friends.select { |friend| friend.age == hash[:age] }
+			elsif hash[:sex]
+				@friends.select { |friend| friend.sex == hash[:sex] }
+			else
+				@friends.select { |friend| hash[:filter].call(friend) }
 			end
 		end
 
 		def unfriend(hash)
 			@friends.delete_if { |x| find(hash).include?(x) }
 		end
-
 	end
 end
 
@@ -97,9 +98,11 @@ friends.add_friend('Denis', :male, 18)
 p friends.find(name: 'Maria')
 p friends.find(age: 28)
 p friends.find(sex: :male)
+p friends.find(filter: ->(friend) { friend.male? && friend.age > 17 })
 
-p "Unfriend Peter: #{friends.unfriend(name: 'Peter')}"
+#p "Unfriend Peter: #{friends.unfriend(name: 'Peter')}"
 
 
 # p friends.find(sex: :female)
-# p friends.find(filter: ->(friend) { friend.male? && friend.age > 20 })
+puts friends.unfriend(filter: ->(friend) { friend.age == 25 })
+p friends.map(&:name)
