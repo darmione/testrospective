@@ -84,21 +84,21 @@ RSpec.describe Podcast do
 		end
 
 		describe 'find by description' do
-			it "finds by all words from description" do
+			it "finds all matches by words from description" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
 				expect(cortex.find(description: ["your", "day"])).to match_array([todolist, schedule])
 			end
 
-			it "finds more than one episode by words from description" do
+			it "finds by all words from description" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
 				expect(cortex.find(description: ['We', 'will', 'talk'])).to match_array([schedule])
 			end
 
-			it "doesn't find by words from description in downcase" do
+			it "doesn't find by words from description if case does not match" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
