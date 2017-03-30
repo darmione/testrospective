@@ -68,37 +68,51 @@ RSpec.describe Podcast do
 
 	context "Find method works" do
 		describe 'find by name' do
-			it "finds by part of name" do
+			it "matches episode by part of the name" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
 				expect(cortex.find(name: "od")).to match_array([productivity, todolist])
 			end
 
-			it "finds by name in downcase" do
+			it "matches episode by the name in downcase" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
 				expect(cortex.find(name: "productivity")).to match_array([productivity])
 			end
+
+			it "doesn't match episode when name doesn't match" do
+				cortex << todolist
+				cortex << productivity
+				cortex << schedule
+				expect(cortex.find(name: "products")).to match_array([])
+			end
 		end
 
 		describe 'find by description' do
-			it "finds all matches by words from description" do
+			it "matches all episodes by all words from description" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
 				expect(cortex.find(description: ["your", "day"])).to match_array([todolist, schedule])
 			end
 
-			it "finds by all words from description" do
+			it "matches episode by all words from description" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
 				expect(cortex.find(description: ['We', 'will', 'talk'])).to match_array([schedule])
 			end
 
-			it "doesn't find by words from description if case does not match" do
+			it "deosn't match episode when there's a word which is not part of the description" do
+				cortex << todolist
+				cortex << productivity
+				cortex << schedule
+				expect(cortex.find(description: ['We', 'will', 'test'])).to match_array([])
+			end
+
+			it "doesn't match episode when case of words from description is different" do
 				cortex << todolist
 				cortex << productivity
 				cortex << schedule
